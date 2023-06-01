@@ -1,12 +1,7 @@
-const ids = []
+const vertices = []
+const edges = [];
 class vertex {
     constructor(x, y, z) {
-        let rand = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-        while (ids.includes(rand)) {
-            rand = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-        }
-        this.id = rand;
-        ids.push(rand);
         this.x = x;
         this.y = y;
         this.z = z;
@@ -23,3 +18,13 @@ class vertex {
     }
 }
 
+class edge {
+    constructor(id1, id2, col) {
+        if (id1 > vertices.length-1 || id2 > vertices.length-1) {
+            console.error("You are a fucking doofus!!! That id does NOT exist!");
+        }
+        this.id1 = id1;
+        this.id2 = id2;
+        this.col = col;
+    }
+}
