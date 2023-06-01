@@ -25,20 +25,19 @@ class vertex {
 }
 
 class edge {
-    constructor(id1, id2, col) {
+    constructor(id1, id2) {
         if (id1 > vertices.length-1 || id2 > vertices.length-1) {
             console.error("You are a fucking doofus!!! That id does NOT exist!");
         } else {
             this.id1 = id1;
             this.id2 = id2;
-            this.col = col;
             edges.push(this);
         }
     }
 }
 
 class side {
-    constructor(ids) {
+    constructor(ids, col) {
         this.ids = ids;
         sides.push(this);
     }
