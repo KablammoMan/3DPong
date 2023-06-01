@@ -1,9 +1,9 @@
 const ids = []
 class vertex {
     constructor(x, y, z) {
-        let rand = Math.floor(Math.random() * 1000000000);
+        let rand = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
         while (ids.includes(rand)) {
-            rand = Math.floor(Math.random() * 1000000000);
+            rand = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
         }
         this.id = rand;
         ids.push(rand);
