@@ -1,5 +1,6 @@
 const vertices = []
 const edges = [];
+const sides = [];
 class vertex {
     constructor(x, y, z) {
         this.x = x;
@@ -8,6 +9,7 @@ class vertex {
         this.vel_x = 0;
         this.vel_y = 0;
         this.vel_z = 0;
+        vertices.push(this)
     }
     set_velocity(x, y, z) {
         this.vel_x = x;
@@ -26,13 +28,19 @@ class edge {
     constructor(id1, id2, col) {
         if (id1 > vertices.length-1 || id2 > vertices.length-1) {
             console.error("You are a fucking doofus!!! That id does NOT exist!");
-            this.error = true;
         } else {
-            this.error = false;
             this.id1 = id1;
             this.id2 = id2;
             this.col = col;
+            edges.push(this);
         }
+    }
+}
+
+class side {
+    constructor(ids) {
+        this.ids = ids;
+        sides.push(this);
     }
 }
 
@@ -63,4 +71,7 @@ var update_int;
 const cvs = new canvas();
 window.addEventListener("load", e => {
     update_int = setInterval(update, 1);
+});
+window.addEventListener("resize", e => {
+    cvs.update_size();
 });
