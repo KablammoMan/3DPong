@@ -62,13 +62,15 @@ class canvas {
     }
 }
 
-function update(can) {
+function update() {
     for (let v of vertices) {
         v.update_pos();
     }
     for (let s of sides) {
-        for (let e of s.ids) {
-            
+        for (let eI of s.ids) {
+            for (let v of edges[eI]) {
+
+            }
         }
     }
 }
@@ -77,7 +79,7 @@ var update_int;
 const cvs = new canvas("#999");
 window.addEventListener("load", e => {
     update_int = setInterval(() =>{
-        update(cvs);
+        update();
     }, 1);
 });
 window.addEventListener("resize", e => {
