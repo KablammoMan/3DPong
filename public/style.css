@@ -4,10 +4,6 @@
     overflow: hidden;
 }
 
-canvas {
-    background-color: #999;
-}
-
 .hidden {
     display: none;
 }
