@@ -1,0 +1,12 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+canvas {
+    background-color: #999;
+}
+
+.hidden {
+    display: none;
+}
