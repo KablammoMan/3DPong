@@ -23,6 +23,9 @@ class vertex {
         this.vel_y += y;
         this.vel_z += z;
     }
+    get_velocity() {
+        return [this.vel_x, this.vel_y, this.vel_z]
+    }
     update_pos() {
         this.x += this.vel_x;
         this.y += this.vel_y;
@@ -55,6 +58,9 @@ class container {
             vertices[vI].add_velocity(x, y, z);
         }
     }
+    get_velocity() {
+        return vertices[this.vids[0]].get_velocity();
+    }
 }
 
 class canvas {
@@ -80,12 +86,12 @@ function render() {
     for (let c of containers) {
         // Determine what sides to render
         let render = [
-            true, // Front (always true)
-            false, // Back (always false)
-            false, // Right
-            false, // Left
-            false, // Top
-            false  // Bottom
+            true,  // 0 Front (always true)
+            false, // 1 Back (always false)
+            false, // 2 Right
+            false, // 3 Left
+            false, // 4 Top
+            false  // 5 Bottom
         ]
 
         let cam_x = 0, cam_y = 0;
@@ -161,12 +167,81 @@ function render() {
     }
 }
 
+function collision(ball, cont, face) {
+    for (let bC = 0; bC < ball.sids.length; bC++) {
+        let sI = ball.sids[bC];
+        let bS = sides[sI];
+        if (bC == 0 && face == "F") {
+            let cI = cont.sids[1];
+            let cS = sides[cI];
+            if (vertices[bS.ids[0]].z <= vertices[cS.ids[0]].z) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        if (bC == 1 && face == "B") {
+            let cI = cont.sids[0];
+            let cS = sides[cI];
+            if (vertices[bS.ids[0]].z >= vertices[cS.ids[0]].z) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        if (bC == 2 && face == "R") {
+            let cI = cont.sids[3];
+            let cS = sides[cI];
+            if (vertices[bS.ids[0]].x >= vertices[cS.ids[0]].x) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        if (bC == 3 && face == "L") {
+            let cI = cont.sids[2];
+            let cS = sides[cI];
+            if (vertices[bS.ids[0]].x <= vertices[cS.ids[0]].x) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        if (bC == 4 && face == "T") {
+            let cI = cont.sids[5];
+            let cS = sides[cI];
+            if (vertices[bS.ids[0]].y <= vertices[cS.ids[0]].y) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        if (bC == 5 && face == "b") {
+            let cI = cont.sids[4];
+            let cS = sides[cI];
+            if (vertices[bS.ids[0]].y >= vertices[cS.ids[0]].y) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+}
+
 function update() {
     cvs.clear();
     for (let v of vertices) {
         v.update_pos();
     }
     render();
+    let ball_vel = pong.get_velocity()
+    if (collision(pong, leftw, "L") || collision(pong, rightw, "R")) {
+        pong.set_velocity(-ball_vel[0], ball_vel[1], ball_vel[2]);
+    }
+    ball_vel = pong.get_velocity()
+    if (collision(pong, topw, "T") || collision(pong, bottomw, "b")) {
+        pong.set_velocity(ball_vel[0], -ball_vel[1], ball_vel[2]);
+    }
 }
 
 var update_int;
