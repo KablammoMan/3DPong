@@ -2,6 +2,7 @@ const vertices = [];
 const sides = [];
 const containers = [];
 const ball_size = 50;
+const paddle_size = 100;
 const area_length = 1000;
 var focal_length = 60;
 class vertex {
@@ -326,32 +327,48 @@ window.addEventListener("load", e => {
     let s22 = new side([24, 25, 29, 28], "#099"); // Top
     let s23 = new side([27, 26, 30, 31], "#099"); // Bottom
 
-    bottomw = new container([24, 25, 26, 27, 28, 29, 30, 31], [18, 19, 20, 21, 22, 23], "bottom")
+    bottomw = new container([24, 25, 26, 27, 28, 29, 30, 31], [18, 19, 20, 21, 22, 23], "bottom");
     
     // AI Paddle Vertices, Sides and Container
+    let v32 = new vertex(paddle_size, paddle_size, -100 + area_length);
+    let v33 = new vertex(-paddle_size, paddle_size, -100 + area_length);
+    let v34 = new vertex(-paddle_size, -paddle_size, -100 + area_length);
+    let v35 = new vertex(paddle_size, -paddle_size, -100 + area_length);
+    let v36 = new vertex(paddle_size, paddle_size, -100 + area_length + 10);
+    let v37 = new vertex(-paddle_size, paddle_size, -100 + area_length + 10);
+    let v38 = new vertex(-paddle_size, -paddle_size, -100 + area_length + 10);
+    let v39 = new vertex(paddle_size, -paddle_size, -100 + area_length + 10);
 
+    let s24 = new side([32, 33, 34, 35], "#c00"); // Front
+    let s25 = new side([36, 37, 38, 39], "#c00"); // Back
+    let s26 = new side([32, 35, 39, 36], "#c00"); // Right
+    let s27 = new side([33, 34, 38, 37], "#c00"); // Left
+    let s28 = new side([35, 34, 38, 39], "#c00"); // Top
+    let s29 = new side([32, 33, 37, 36], "#c00"); // Bottom
+
+    ai = new container([32, 33, 34, 35, 36, 37, 38, 39], [24, 25, 26, 27, 28, 29], "ai");
     
     // Ball Vertices, Sides and Container
-    let v32 = new vertex(ball_size, ball_size, ball_size + area_length/2);
-    let v33 = new vertex(ball_size, ball_size, -ball_size + area_length/2);
-    let v34 = new vertex(ball_size, -ball_size, -ball_size + area_length/2);
-    let v35 = new vertex(ball_size, -ball_size, ball_size + area_length/2);
-    let v36 = new vertex(-ball_size, -ball_size, ball_size + area_length/2);
-    let v37 = new vertex(-ball_size, ball_size, ball_size + area_length/2);
-    let v38 = new vertex(-ball_size, ball_size, -ball_size + area_length/2);
-    let v39 = new vertex(-ball_size, -ball_size, -ball_size + area_length/2);
+    let v40 = new vertex(ball_size, ball_size, ball_size + area_length/2);
+    let v41 = new vertex(ball_size, ball_size, -ball_size + area_length/2);
+    let v42 = new vertex(ball_size, -ball_size, -ball_size + area_length/2);
+    let v43 = new vertex(ball_size, -ball_size, ball_size + area_length/2);
+    let v44 = new vertex(-ball_size, -ball_size, ball_size + area_length/2);
+    let v45 = new vertex(-ball_size, ball_size, ball_size + area_length/2);
+    let v46 = new vertex(-ball_size, ball_size, -ball_size + area_length/2);
+    let v47 = new vertex(-ball_size, -ball_size, -ball_size + area_length/2);
 
-    let s24 = new side([33, 38, 39, 34], "#cc0"); // Front
-    let s25 = new side([32, 37, 36, 35], "#cc0"); // Back
-    let s26 = new side([32, 33, 34, 35], "#cc0"); // Right
-    let s27 = new side([36, 37, 38, 39], "#cc0"); // Left
-    let s28 = new side([34, 35, 36, 39], "#cc0"); // Top
-    let s29 = new side([32, 33, 38, 37], "#cc0"); // Bottom
+    let s30 = new side([41, 46, 47, 42], "#cc0"); // Front
+    let s31 = new side([40, 45, 44, 43], "#cc0"); // Back
+    let s32 = new side([40, 41, 42, 43], "#cc0"); // Right
+    let s33 = new side([44, 45, 46, 47], "#cc0"); // Left
+    let s34 = new side([42, 43, 44, 47], "#cc0"); // Top
+    let s35 = new side([40, 41, 46, 45], "#cc0"); // Bottom
 
-    pong = new container([32, 33, 34, 35, 36, 37, 38, 39], [24, 25, 26, 27, 28, 29], "ball");
+    pong = new container([40, 41, 42, 43, 44, 45, 46, 47], [30, 31, 32, 33, 34, 35], "ball");
 
     // Player Paddle Vertices, Sides and Container
-
+    let v48 = 
 
 
     focal_length = Math.floor(Math.min(window.innerWidth, window.innerHeight) / 2);
