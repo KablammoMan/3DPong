@@ -176,6 +176,7 @@ var update_int;
 var pong;
 var ai;
 var player;
+var ball_size = 50;
 var topw, leftw, rightw, bottomw;
 const cvs = new canvas("#999");
 window.addEventListener("load", e => {
@@ -256,16 +257,17 @@ window.addEventListener("load", e => {
     bottomw = new container([24, 25, 26, 27, 28, 29, 30, 31], [18, 19, 20, 21, 22, 23], "bottom")
     
     // AI Paddle Vertices, Sides and Container
+
     
     // Ball Vertices, Sides and Container
-    let v32 = new vertex(50, 50, 50);
-    let v33 = new vertex(50, 50, -50);
-    let v34 = new vertex(50, -50, -50);
-    let v35 = new vertex(50, -50, 50);
-    let v36 = new vertex(-50, -50, 50);
-    let v37 = new vertex(-50, 50, 50);
-    let v38 = new vertex(-50, 50, -50);
-    let v39 = new vertex(-50, -50, -50);
+    let v32 = new vertex(ball_size, ball_size, ball_size);
+    let v33 = new vertex(ball_size, ball_size, -ball_size);
+    let v34 = new vertex(ball_size, -ball_size, -ball_size);
+    let v35 = new vertex(ball_size, -ball_size, ball_size);
+    let v36 = new vertex(-ball_size, -ball_size, ball_size);
+    let v37 = new vertex(-ball_size, ball_size, ball_size);
+    let v38 = new vertex(-ball_size, ball_size, -ball_size);
+    let v39 = new vertex(-ball_size, -ball_size, -ball_size);
 
     let s24 = new side([33, 38, 39, 34], "#cc0"); // Front
     let s25 = new side([32, 37, 36, 35], "#cc0"); // Back
@@ -277,6 +279,8 @@ window.addEventListener("load", e => {
     pong = new container([32, 33, 34, 35, 36, 37, 38, 39], [24, 25, 26, 27, 28, 29], "ball");
 
     // Player Paddle Vertices, Sides and Container
+
+
 
     focal_length = Math.floor(Math.min(window.innerWidth, window.innerHeight) / 2);
     update_int = setInterval(() =>{
