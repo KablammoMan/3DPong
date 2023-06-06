@@ -2,6 +2,7 @@ const vertices = [];
 const sides = [];
 const containers = [];
 const ball_size = 50;
+const area_length = 1000;
 var focal_length = 60;
 class vertex {
     constructor(x, y, z) {
@@ -256,10 +257,10 @@ window.addEventListener("load", e => {
     let v1 = new vertex(-600, 500, -100);
     let v2 = new vertex(-600, -500, -100);
     let v3 = new vertex(-500, -500, -100);
-    let v4 = new vertex(-500, 500, 1000);
-    let v5 = new vertex(-600, 500, 1000);
-    let v6 = new vertex(-600, -500, 1000);
-    let v7 = new vertex(-500, -500, 1000);
+    let v4 = new vertex(-500, 500, -100 + area_length);
+    let v5 = new vertex(-600, 500, -100 + area_length);
+    let v6 = new vertex(-600, -500, -100 + area_length);
+    let v7 = new vertex(-500, -500, -100 + area_length);
 
     let s0 = new side([0, 1, 2, 3], "#099"); // Front
     let s1 = new side([4, 5, 6, 7], "#099"); // Back
@@ -275,10 +276,10 @@ window.addEventListener("load", e => {
     let v9 = new vertex(600, 500, -100);
     let v10 = new vertex(600, -500, -100);
     let v11 = new vertex(500, -500, -100);
-    let v12 = new vertex(500, 500, 1000);
-    let v13 = new vertex(600, 500, 1000);
-    let v14 = new vertex(600, -500, 1000);
-    let v15 = new vertex(500, -500, 1000);
+    let v12 = new vertex(500, 500, -100 + area_length);
+    let v13 = new vertex(600, 500, -100 + area_length);
+    let v14 = new vertex(600, -500, -100 + area_length);
+    let v15 = new vertex(500, -500, -100 + area_length);
     
     let s6 = new side([8, 9, 10, 11], "#099"); // Front
     let s7 = new side([12, 13, 14, 15], "#099"); // Back
@@ -294,10 +295,10 @@ window.addEventListener("load", e => {
     let v17 = new vertex(-500, -500, -100);
     let v18 = new vertex(-500, -600, -100);
     let v19 = new vertex(500, -600, -100);
-    let v20 = new vertex(500, -500, 1000);
-    let v21 = new vertex(-500, -500, 1000);
-    let v22 = new vertex(-500, -600, 1000);
-    let v23 = new vertex(500, -600, 1000);
+    let v20 = new vertex(500, -500, -100 + area_length);
+    let v21 = new vertex(-500, -500, -100 + area_length);
+    let v22 = new vertex(-500, -600, -100 + area_length);
+    let v23 = new vertex(500, -600, -100 + area_length);
 
     let s12 = new side([16, 17, 18, 19], "#099"); // Front
     let s13 = new side([20, 21, 22, 23], "#099"); // Back
@@ -313,10 +314,10 @@ window.addEventListener("load", e => {
     let v25 = new vertex(-500, 500, -100);
     let v26 = new vertex(-500, 600, -100);
     let v27 = new vertex(500, 600, -100);
-    let v28 = new vertex(500, 500, 1000);
-    let v29 = new vertex(-500, 500, 1000);
-    let v30 = new vertex(-500, 600, 1000);
-    let v31 = new vertex(500, 600, 1000);
+    let v28 = new vertex(500, 500, -100 + area_length);
+    let v29 = new vertex(-500, 500, -100 + area_length);
+    let v30 = new vertex(-500, 600, -100 + area_length);
+    let v31 = new vertex(500, 600, -100 + area_length);
 
     let s18 = new side([24, 25, 26, 27], "#099"); // Front
     let s19 = new side([28, 29, 30, 31], "#099"); // Back
@@ -331,14 +332,14 @@ window.addEventListener("load", e => {
 
     
     // Ball Vertices, Sides and Container
-    let v32 = new vertex(ball_size, ball_size, ball_size);
-    let v33 = new vertex(ball_size, ball_size, -ball_size);
-    let v34 = new vertex(ball_size, -ball_size, -ball_size);
-    let v35 = new vertex(ball_size, -ball_size, ball_size);
-    let v36 = new vertex(-ball_size, -ball_size, ball_size);
-    let v37 = new vertex(-ball_size, ball_size, ball_size);
-    let v38 = new vertex(-ball_size, ball_size, -ball_size);
-    let v39 = new vertex(-ball_size, -ball_size, -ball_size);
+    let v32 = new vertex(ball_size, ball_size, ball_size + area_length/2);
+    let v33 = new vertex(ball_size, ball_size, -ball_size + area_length/2);
+    let v34 = new vertex(ball_size, -ball_size, -ball_size + area_length/2);
+    let v35 = new vertex(ball_size, -ball_size, ball_size + area_length/2);
+    let v36 = new vertex(-ball_size, -ball_size, ball_size + area_length/2);
+    let v37 = new vertex(-ball_size, ball_size, ball_size + area_length/2);
+    let v38 = new vertex(-ball_size, ball_size, -ball_size + area_length/2);
+    let v39 = new vertex(-ball_size, -ball_size, -ball_size + area_length/2);
 
     let s24 = new side([33, 38, 39, 34], "#cc0"); // Front
     let s25 = new side([32, 37, 36, 35], "#cc0"); // Back
