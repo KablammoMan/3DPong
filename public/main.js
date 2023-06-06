@@ -1,5 +1,6 @@
 const vertices = [];
 const sides = [];
+const containers = [];
 var focal_length = 60;
 class vertex {
     constructor(x, y, z) {
@@ -37,16 +38,19 @@ class side {
 }
 
 class container {
-    constructor(ids) {
-        this.ids = ids;
+    constructor(vids, sids, name) {
+        this.vids = vids;
+        this.sids = sids;
+        this.name = name;
+        containers.push(this);
     }
     set_velocity(x, y, z) {
-        for (let vI of this.ids) {
+        for (let vI of this.vids) {
             vertices[vI].set_velocity(x, y, z);
         }
     }
     add_velocity(x, y, z) {
-        for (let vI of this.ids) {
+        for (let vI of this.vids) {
             vertices[vI].add_velocity(x, y, z);
         }
     }
@@ -75,56 +79,104 @@ function update() {
     for (let v of vertices) {
         v.update_pos();
     }
-    // Fill Sides
-    for (let s of sides) {
-        cvs.ctx.fillStyle = s.col;
-        cvs.ctx.beginPath();
-        let count = 0;
-        for (let vI of s.ids) {
-            let x = vertices[vI].x;
-            let y = vertices[vI].y;
-            let z = vertices[vI].z;
-            let px = (focal_length * x) / (focal_length + z);
-            let py = (focal_length * y) / (focal_length + z);
-            if (count == 0) {
-                cvs.ctx.moveTo(cvs.canvas.width/2 + px, cvs.canvas.height/2 + py);
-            } else {
-                cvs.ctx.lineTo(cvs.canvas.width/2 + px, cvs.canvas.height/2 + py);
-            }
-            count++;
+    for (let c of containers) {
+        // Determine what sides to render
+        let render = [
+            true, // Front (always true)
+            false, // Back (always false)
+            false, // Right
+            false, // Left
+            false, // Top
+            false  // Bottom
+        ]
+
+        let cam_x = 0, cam_y = 0;
+        let cam_z = -1 * focal_length;
+        let cont_x = 0, cont_y = 0, cont_z = 0;
+        for (let vI of c.vids) {
+            cont_x += vertices[vI].x;
+            cont_y += vertices[vI].y;
+            cont_z += vertices[vI].z;
         }
-        cvs.ctx.closePath();
-        cvs.ctx.fill();
-    }
-    // Stroke Wireframe
-    for (let s of sides) {
-        cvs.ctx.strokeStyle = "#000";
-        cvs.ctx.lineWidth = "10px";
-        cvs.ctx.fillStyle = s.col;
-        cvs.ctx.beginPath();
-        let count = 0;
-        for (let vI of s.ids) {
-            let x = vertices[vI].x;
-            let y = vertices[vI].y;
-            let z = vertices[vI].z;
-            let px = (focal_length * x) / (focal_length + z);
-            let py = (focal_length * y) / (focal_length + z);
-            if (count == 0) {
-                cvs.ctx.moveTo(cvs.canvas.width/2 + px, cvs.canvas.height/2 + py);
-            } else {
-                cvs.ctx.lineTo(cvs.canvas.width/2 + px, cvs.canvas.height/2 + py);
-            }
-            count++;
+        cont_x /= c.vids.length;
+        cont_y /= c.vids.length;
+        cont_z /= c.vids.length;
+
+        if (cont_x < cam_x) {
+            render[2] = true;
         }
-        cvs.ctx.closePath();
-        cvs.ctx.stroke();
+        if (cont_x > cam_x) {
+            render[3] = true;
+        }
+        if (cont_y < cam_y) {
+            render[5] = true;
+        }
+        if (cont_y > cam_y) {
+            render[4] = true;
+        }
+        if (cont_z < cam_z) {
+            render = [false, false, false, false, false, false]; // DO NOT RENDER IF BEHIND CAMERA
+        }
+        
+        // Fill
+        for (let sC = 0; sC < c.sids.length; sC++) {
+            if (render[sC]) {
+                let sI = c.sids[sC];
+                let s = sides[sI];
+                cvs.ctx.fillStyle = s.col;
+                cvs.ctx.beginPath();
+                let count = 0;
+                for (let vI of s.ids) {
+                    let x = vertices[vI].x;
+                    let y = vertices[vI].y;
+                    let z = vertices[vI].z;
+                    let px = (focal_length * x) / (focal_length + z);
+                    let py = (focal_length * y) / (focal_length + z);
+                    if (count == 0) {
+                        cvs.ctx.moveTo(cvs.canvas.width/2 + px, cvs.canvas.height/2 + py);
+                    } else {
+                        cvs.ctx.lineTo(cvs.canvas.width/2 + px, cvs.canvas.height/2 + py);
+                    }
+                    count++;
+                }
+                cvs.ctx.closePath();
+                cvs.ctx.fill();
+            }
+        }
+        // Stroke
+        for (let sC = 0; sC < c.sids.length; sC++) {
+            if (render[sC]) {
+                let sI = c.sids[sC];
+                let s = sides[sI];
+                cvs.ctx.strokeStyle = "#000";
+                cvs.ctx.lineWidth = "10px";
+                cvs.ctx.beginPath();
+                let count = 0;
+                for (let vI of s.ids) {
+                    let x = vertices[vI].x;
+                    let y = vertices[vI].y;
+                    let z = vertices[vI].z;
+                    let px = (focal_length * x) / (focal_length + z);
+                    let py = (focal_length * y) / (focal_length + z);
+                    if (count == 0) {
+                        cvs.ctx.moveTo(cvs.canvas.width/2 + px, cvs.canvas.height/2 + py);
+                    } else {
+                        cvs.ctx.lineTo(cvs.canvas.width/2 + px, cvs.canvas.height/2 + py);
+                    }
+                    count++;
+                }
+                cvs.ctx.closePath();
+                cvs.ctx.stroke();
+            }
+        }
     }
 }
 
 var update_int;
 var pong;
 var ai;
-var top, left, right, bottom;
+var player;
+var topw, leftw, rightw, bottomw;
 const cvs = new canvas("#999");
 window.addEventListener("load", e => {
     // Left Wall Vertices and Container
@@ -141,11 +193,11 @@ window.addEventListener("load", e => {
     let s1 = new side([4, 5, 6, 7], "#099"); // Back
     let s2 = new side([0, 3, 7, 4], "#099"); // Right
     let s3 = new side([1, 2, 6, 5], "#099"); // Left
-    let s4 = new side([1, 0, 4, 5], "#099"); // 
-    let s5 = new side([2, 3, 7, 6], "#099");
+    let s4 = new side([2, 3, 7, 6], "#099"); // Top
+    let s5 = new side([1, 0, 4, 5], "#099"); // Bottom
 
-    left = new container([0, 1, 2, 3, 4, 5, 6, 7]);
-
+    leftw = new container([0, 1, 2, 3, 4, 5, 6, 7], [0, 1, 2, 3, 4, 5], "left");
+    
     // Right Wall Vertices, Sides and Container
     let v8 = new vertex(500, 500, -100);
     let v9 = new vertex(600, 500, -100);
@@ -155,15 +207,15 @@ window.addEventListener("load", e => {
     let v13 = new vertex(600, 500, 1000);
     let v14 = new vertex(600, -500, 1000);
     let v15 = new vertex(500, -500, 1000);
+    
+    let s6 = new side([8, 9, 10, 11], "#099"); // Front
+    let s7 = new side([12, 13, 14, 15], "#099"); // Back
+    let s8 = new side([9, 10, 14, 13], "#099"); // Right
+    let s9 = new side([8, 11, 15, 12], "#099"); // Left
+    let s10 = new side([10, 11, 15, 14], "#099"); // Top
+    let s11 = new side([9, 8, 12, 13], "#099"); // Bottom
 
-    let s6 = new side([8, 9, 10, 11], "#099");
-    let s7 = new side([12, 13, 14, 15], "#099");
-    let s8 = new side([9, 10, 14, 13], "#099");
-    let s9 = new side([8, 11, 15, 12], "#099");
-    let s10 = new side([10, 11, 15, 14], "#099");
-    let s11 = new side([9, 8, 12, 13], "#099");
-
-    right = new container([8, 9, 10, 11, 12, 13, 14, 15]);
+    rightw = new container([8, 9, 10, 11, 12, 13, 14, 15], [6, 7, 8, 9, 10, 11], "right");
 
     // Top Wall Vertices, Sides and Container
     let v16 = new vertex(500, -500, -100);
@@ -182,7 +234,7 @@ window.addEventListener("load", e => {
     let s16 = new side([19, 18, 22, 23], "#099"); // Top
     let s17 = new side([16, 17, 21, 20], "#099"); // Bottom
 
-    top = new container([16, 17, 18, 19, 20, 21, 22, 23]);
+    topw = new container([16, 17, 18, 19, 20, 21, 22, 23], [12, 13, 14, 15, 16, 17], "top");
 
     // Bottom Wall Vertices, Sides and Container
     let v24 = new vertex(500, 500, -100);
@@ -198,32 +250,33 @@ window.addEventListener("load", e => {
     let s19 = new side([28, 29, 30, 31], "#099"); // Back
     let s20 = new side([24, 27, 31, 28], "#099"); // Right
     let s21 = new side([25, 26, 30, 29], "#099"); // Left
-    let s22 = new side([27, 26, 30, 31], "#099"); // Top
-    let s23 = new side([24, 25, 29, 28], "#099"); // Bottom
+    let s22 = new side([24, 25, 29, 28], "#099"); // Top
+    let s23 = new side([27, 26, 30, 31], "#099"); // Bottom
 
-    bottom = new container([24, 25, 26, 27, 28, 29, 30, 31])
+    bottomw = new container([24, 25, 26, 27, 28, 29, 30, 31], [18, 19, 20, 21, 22, 23], "bottom")
     
     // AI Paddle Vertices, Sides and Container
-
+    
     // Ball Vertices, Sides and Container
-    let v32 = new vertex( 100,  100,  100);
-    let v33 = new vertex( 100,  100, -100);
-    let v34 = new vertex( 100, -100, -100);
-    let v35 = new vertex( 100, -100,  100);
-    let v36 = new vertex(-100, -100,  100);
-    let v37 = new vertex(-100,  100,  100);
-    let v38 = new vertex(-100,  100, -100);
-    let v39 = new vertex(-100, -100, -100);
+    let v32 = new vertex(50, 50, 50);
+    let v33 = new vertex(50, 50, -50);
+    let v34 = new vertex(50, -50, -50);
+    let v35 = new vertex(50, -50, 50);
+    let v36 = new vertex(-50, -50, 50);
+    let v37 = new vertex(-50, 50, 50);
+    let v38 = new vertex(-50, 50, -50);
+    let v39 = new vertex(-50, -50, -50);
 
-    let s24 = new side([33, 38, 39, 34], "#cc0");
-    let s25 = new side([32, 33, 34, 35], "#cc0");
-    let s26 = new side([36, 37, 38, 39], "#cc0");
-    let s27 = new side([34, 35, 36, 39], "#cc0");
-    let s28 = new side([32, 33, 38, 37], "#cc0");
-    let s29 = new side([32, 37, 36, 35], "#cc0");
+    let s24 = new side([33, 38, 39, 34], "#cc0"); // Front
+    let s25 = new side([32, 37, 36, 35], "#cc0"); // Back
+    let s26 = new side([32, 33, 34, 35], "#cc0"); // Right
+    let s27 = new side([36, 37, 38, 39], "#cc0"); // Left
+    let s28 = new side([34, 35, 36, 39], "#cc0"); // Top
+    let s29 = new side([32, 33, 38, 37], "#cc0"); // Bottom
 
-    pong = new container([32, 33, 34, 35, 36, 37, 38, 39]);
+    pong = new container([32, 33, 34, 35, 36, 37, 38, 39], [24, 25, 26, 27, 28, 29], "ball");
 
+    // Player Paddle Vertices, Sides and Container
 
     focal_length = Math.floor(Math.min(window.innerWidth, window.innerHeight) / 2);
     update_int = setInterval(() =>{
