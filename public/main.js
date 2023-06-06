@@ -1,9 +1,13 @@
 const vertices = [];
 const sides = [];
 const containers = [];
+const keypress = {};
 const ball_size = 50;
 const paddle_size = 100;
+const p_thickness = 20;
 const area_length = 1000;
+const ai_speed_multi = 2;
+const p_speed_multi = 2;
 var focal_length = 60;
 class vertex {
     constructor(x, y, z) {
@@ -24,6 +28,11 @@ class vertex {
         this.vel_x += x;
         this.vel_y += y;
         this.vel_z += z;
+    }
+    change_pos(x, y, z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
     }
     get_velocity() {
         return [this.vel_x, this.vel_y, this.vel_z]
@@ -58,6 +67,11 @@ class container {
     add_velocity(x, y, z) {
         for (let vI of this.vids) {
             vertices[vI].add_velocity(x, y, z);
+        }
+    }
+    change_pos(x, y, z) {
+        for (let vI of this.vids) {
+            vertices[vI].change_pos(x, y, z);
         }
     }
     get_velocity() {
@@ -173,10 +187,33 @@ function collision(ball, cont, face) {
     for (let bC = 0; bC < ball.sids.length; bC++) {
         let sI = ball.sids[bC];
         let bS = sides[sI];
+
+        let bF = vertices[sides[ball.sids[0]].ids[0]].z;
+        let bB = vertices[sides[ball.sids[1]].ids[0]].z;
+        let bR = vertices[sides[ball.sids[2]].ids[0]].x;
+        let bL = vertices[sides[ball.sids[3]].ids[0]].x;
+        let bT = vertices[sides[ball.sids[4]].ids[0]].y;
+        let bb = vertices[sides[ball.sids[5]].ids[0]].y;
+
+        let cF = vertices[sides[cont.sids[0]].ids[0]].z;
+        let cB = vertices[sides[cont.sids[1]].ids[0]].z;
+        let cR = vertices[sides[cont.sids[2]].ids[0]].x;
+        let cL = vertices[sides[cont.sids[3]].ids[0]].x;
+        let cT = vertices[sides[cont.sids[4]].ids[0]].y;
+        let cb = vertices[sides[cont.sids[5]].ids[0]].y;
+
         if (bC == 0 && face == "F") {
             let cI = cont.sids[1];
             let cS = sides[cI];
-            if (vertices[bS.ids[0]].z <= vertices[cS.ids[0]].z) {
+            if (
+                vertices[bS.ids[0]].z <= vertices[cS.ids[0]].z &&
+                (
+                    (bR > cL && bR < cR && bb > cT && bb < cb) ||
+                    (bL > cL && bL < cR && bb > cT && bb < cb) ||
+                    (bR > cL && bR < cR && bT > cT && bT < cb) ||
+                    (bL > cL && bL < cR && bT > cT && bT < cb)
+                )
+            ) {
                 return true;
             } else {
                 return false;
@@ -185,7 +222,15 @@ function collision(ball, cont, face) {
         if (bC == 1 && face == "B") {
             let cI = cont.sids[0];
             let cS = sides[cI];
-            if (vertices[bS.ids[0]].z >= vertices[cS.ids[0]].z) {
+            if (
+                vertices[bS.ids[0]].z >= vertices[cS.ids[0]].z &&
+                (
+                    (bR > cL && bR < cR && bb > cT && bb < cb) ||
+                    (bL > cL && bL < cR && bb > cT && bb < cb) ||
+                    (bR > cL && bR < cR && bT > cT && bT < cb) ||
+                    (bL > cL && bL < cR && bT > cT && bT < cb)
+                )
+            ) {
                 return true;
             } else {
                 return false;
@@ -235,7 +280,34 @@ function update() {
     for (let v of vertices) {
         v.update_pos();
     }
+
+    if ((keypress["w"] || keypress["arrowup"]) && vertices[sides[player.sids[4]].ids[0]].y > vertices[sides[topw.sids[5]].ids[0]].y) {
+        player.change_pos(0, -1 * p_speed_multi, 0);
+    }
+    if ((keypress["a"] || keypress["arrowleft"]) && vertices[sides[player.sids[3]].ids[0]].x > vertices[sides[leftw.sids[2]].ids[0]].x) {
+        player.change_pos(-1 * p_speed_multi, 0, 0);
+    }
+    if ((keypress["s"] || keypress["arrowdown"]) && vertices[sides[player.sids[5]].ids[0]].y < vertices[sides[bottomw.sids[4]].ids[0]].y) {
+        player.change_pos(0, 1 * p_speed_multi, 0);
+    }
+    if ((keypress["d"] || keypress["arrowright"]) && vertices[sides[player.sids[2]].ids[0]].x < vertices[sides[rightw.sids[3]].ids[0]].x) {
+        player.change_pos(1 * p_speed_multi, 0, 0);
+    }
+    if (vertices[sides[ai.sids[4]].ids[0]].y < vertices[sides[topw.sids[5]].ids[0]].y) {
+        ai.set_velocity(0, 0, 0);
+    }
+    if (vertices[sides[ai.sids[3]].ids[0]].x < vertices[sides[leftw.sids[2]].ids[0]].x) {
+        ai.set_velocity(0, 0, 0);
+    }
+    if (vertices[sides[ai.sids[5]].ids[0]].y > vertices[sides[bottomw.sids[4]].ids[0]].y) {
+        ai.set_velocity(0, 0, 0);
+    }
+    if (vertices[sides[ai.sids[2]].ids[0]].x > vertices[sides[rightw.sids[3]].ids[0]].x) {
+        ai.set_velocity(0, 0, 0);
+    }
+
     render();
+
     let ball_vel = pong.get_velocity()
     if (collision(pong, leftw, "L") || collision(pong, rightw, "R")) {
         pong.set_velocity(-ball_vel[0], ball_vel[1], ball_vel[2]);
@@ -243,6 +315,34 @@ function update() {
     ball_vel = pong.get_velocity()
     if (collision(pong, topw, "T") || collision(pong, bottomw, "b")) {
         pong.set_velocity(ball_vel[0], -ball_vel[1], ball_vel[2]);
+    }
+    ball_vel = pong.get_velocity()
+    if (collision(pong, player, "F") || collision(pong, ai, "B")) {
+        pong.set_velocity(ball_vel[0], ball_vel[1], -ball_vel[2]);
+    }
+
+    let col_x = (vertices[sides[ai.sids[0]].ids[0]].z - vertices[sides[pong.sids[0]].ids[0]].z)/pong.get_velocity()[2]*pong.get_velocity()[0];
+    let col_y = (vertices[sides[ai.sids[0]].ids[0]].z - vertices[sides[pong.sids[0]].ids[0]].z)/pong.get_velocity()[2]*pong.get_velocity()[1];
+    let ai_x = 0;
+    let ai_y = 0;
+    for (let vI of ai.vids) {
+        ai_x += vertices[vI].x;
+        ai_y += vertices[vI].y;
+    }
+    ai_x /= ai.vids.length;
+    ai_y /= ai.vids.length;
+
+    if (col_x < ai_x) {
+        ai.change_pos(-1 * ai_speed_multi, 0, 0);
+    }
+    if (col_x > ai_x) {
+        ai.change_pos(1 * ai_speed_multi, 0, 0);
+    }
+    if (col_y < ai_y) {
+        ai.change_pos(0, -1 * ai_speed_multi, 0);
+    }
+    if (col_y > ai_y) {
+        ai.change_pos(0, 1 * ai_speed_multi, 0);
     }
 }
 
@@ -330,14 +430,14 @@ window.addEventListener("load", e => {
     bottomw = new container([24, 25, 26, 27, 28, 29, 30, 31], [18, 19, 20, 21, 22, 23], "bottom");
     
     // AI Paddle Vertices, Sides and Container
-    let v32 = new vertex(paddle_size, paddle_size, -100 + area_length);
-    let v33 = new vertex(-paddle_size, paddle_size, -100 + area_length);
-    let v34 = new vertex(-paddle_size, -paddle_size, -100 + area_length);
-    let v35 = new vertex(paddle_size, -paddle_size, -100 + area_length);
-    let v36 = new vertex(paddle_size, paddle_size, -100 + area_length + 10);
-    let v37 = new vertex(-paddle_size, paddle_size, -100 + area_length + 10);
-    let v38 = new vertex(-paddle_size, -paddle_size, -100 + area_length + 10);
-    let v39 = new vertex(paddle_size, -paddle_size, -100 + area_length + 10);
+    let v32 = new vertex(paddle_size, paddle_size, -100 + area_length - p_thickness);
+    let v33 = new vertex(-paddle_size, paddle_size, -100 + area_length - p_thickness);
+    let v34 = new vertex(-paddle_size, -paddle_size, -100 + area_length - p_thickness);
+    let v35 = new vertex(paddle_size, -paddle_size, -100 + area_length - p_thickness);
+    let v36 = new vertex(paddle_size, paddle_size, -100 + area_length);
+    let v37 = new vertex(-paddle_size, paddle_size, -100 + area_length);
+    let v38 = new vertex(-paddle_size, -paddle_size, -100 + area_length);
+    let v39 = new vertex(paddle_size, -paddle_size, -100 + area_length);
 
     let s24 = new side([32, 33, 34, 35], "#c00"); // Front
     let s25 = new side([36, 37, 38, 39], "#c00"); // Back
@@ -368,8 +468,23 @@ window.addEventListener("load", e => {
     pong = new container([40, 41, 42, 43, 44, 45, 46, 47], [30, 31, 32, 33, 34, 35], "ball");
 
     // Player Paddle Vertices, Sides and Container
-    let v48 = 
+    let v48 = new vertex(100, 100, -100);
+    let v49 = new vertex(-100, 100, -100);
+    let v50 = new vertex(-100, -100, -100);
+    let v51 = new vertex(100, -100, -100);
+    let v52 = new vertex(100, 100, -100 + p_thickness);
+    let v53 = new vertex(-100, 100, -100 + p_thickness);
+    let v54 = new vertex(-100, -100, -100 + p_thickness);
+    let v55 = new vertex(100, -100, -100 + p_thickness);
 
+    let s36 = new side([48, 49, 50, 51], "#0c0"); // Front
+    let s37 = new side([52, 53, 54, 55], "#0c0"); // Back
+    let s38 = new side([48, 51, 55, 52], "#0c0"); // Right
+    let s39 = new side([49, 50, 54, 53], "#0c0"); // Left
+    let s40 = new side([51, 50, 54, 55], "#0c0"); // Top
+    let s41 = new side([48, 49, 53, 52], "#0c0"); // Bottom
+
+    player = new container([48, 49, 50, 51, 52, 53, 54, 55], [36, 37, 38, 39, 40, 41], "player")
 
     focal_length = Math.floor(Math.min(window.innerWidth, window.innerHeight) / 2);
     update_int = setInterval(() =>{
@@ -379,4 +494,10 @@ window.addEventListener("load", e => {
 window.addEventListener("resize", e => {
     focal_length = Math.floor(Math.min(window.innerWidth, window.innerHeight) / 2);
     cvs.update_size();
+});
+window.addEventListener("keydown", e => {
+    keypress[e.key.toLowerCase()] = true;
+});
+window.addEventListener("keyup", e => {
+    keypress[e.key.toLowerCase()] = false;
 });
