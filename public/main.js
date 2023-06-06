@@ -74,11 +74,8 @@ class canvas {
     }
 }
 
-function update() {
-    cvs.clear();
-    for (let v of vertices) {
-        v.update_pos();
-    }
+
+function render() {
     for (let c of containers) {
         // Determine what sides to render
         let render = [
@@ -161,6 +158,14 @@ function update() {
             }
         }
     }
+}
+
+function update() {
+    cvs.clear();
+    for (let v of vertices) {
+        v.update_pos();
+    }
+    render();
 }
 
 var update_int;
