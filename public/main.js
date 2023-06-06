@@ -92,29 +92,20 @@ function update() {
 
         let cam_x = 0, cam_y = 0;
         let cam_z = -1 * focal_length;
-        let cont_x = 0, cont_y = 0, cont_z = 0;
-        for (let vI of c.vids) {
-            cont_x += vertices[vI].x;
-            cont_y += vertices[vI].y;
-            cont_z += vertices[vI].z;
-        }
-        cont_x /= c.vids.length;
-        cont_y /= c.vids.length;
-        cont_z /= c.vids.length;
 
-        if (cont_x < cam_x) {
+        if (vertices[sides[c.sids[2]].ids[0]].x < cam_x) {
             render[2] = true;
         }
-        if (cont_x > cam_x) {
+        if (vertices[sides[c.sids[3]].ids[0]].x > cam_x) {
             render[3] = true;
         }
-        if (cont_y < cam_y) {
+        if (vertices[sides[c.sids[5]].ids[0]].y < cam_y) {
             render[5] = true;
         }
-        if (cont_y > cam_y) {
+        if (vertices[sides[c.sids[4]].ids[0]].y > cam_y) {
             render[4] = true;
         }
-        if (cont_z < cam_z) {
+        if (vertices[sides[c.sids[0]].ids[0]].z <= cam_z) {
             render = [false, false, false, false, false, false]; // DO NOT RENDER IF BEHIND CAMERA
         }
         
