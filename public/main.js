@@ -1,6 +1,7 @@
 const vertices = [];
 const sides = [];
 const containers = [];
+const ball_size = 50;
 var focal_length = 60;
 class vertex {
     constructor(x, y, z) {
@@ -172,7 +173,6 @@ var update_int;
 var pong;
 var ai;
 var player;
-var ball_size = 50;
 var topw, leftw, rightw, bottomw;
 const cvs = new canvas("#999");
 window.addEventListener("load", e => {
