@@ -1,17 +1,21 @@
 const vertices = [];
 const sides = [];
 const containers = [];
+const texts = [];
 const keypress = {};
 const ball_size = 50;
 const paddle_size = 100;
 const p_thickness = 20;
 const area_length = 1000;
-const ai_speed_multi = 10;
-const p_speed_multi = 10;
+const ai_speed_multi = 5;
+const p_speed_multi = 5;
 const x_bounce_multi = 0.1; // Increase Amount per X bounce
 const y_bounce_multi = 0.1; // Increase Amount per Y bounce
 const z_bounce_multi = 0.1; // Increase Amount per Z bounce
 var focal_length = 60;
+var p_score = 0;
+var a_score = 0;
+var end = false;
 class vertex {
     constructor(x, y, z) {
         this.x = x;
@@ -79,6 +83,25 @@ class container {
     }
     get_velocity() {
         return vertices[this.vids[0]].get_velocity();
+    }
+}
+
+class text {
+    constructor(x, y, font, text) {
+        this.x = x;
+        this.y = y;
+        this.ax = -cvs.canvas.width/2 + this.x;
+        this.ay = -cvs.canvas.width/2 + this.y;
+        this.font = font;
+        this.text = text;
+        texts.push(this);
+    }
+    update_text(text) {
+        this.text = text;
+    }
+    update_pos() {
+        this.ax = -cvs.canvas.width/2 + this.x;
+        this.ay = -cvs.canvas.height/2 + this.y;
     }
 }
 
@@ -184,6 +207,11 @@ function render() {
             }
         }
     }
+    for (let t of texts) {
+        cvs.ctx.font = t.font;
+        cvs.ctx.fillStyle = "#000";
+        cvs.ctx.fillText(t.text, cvs.canvas.width/2 + t.ax, cvs.canvas.height/2 + t.ay);
+    }
 }
 
 function collision(ball, cont, face) {
@@ -268,90 +296,14 @@ function collision(ball, cont, face) {
     }
 }
 
-function update() {
-    cvs.clear();
-    for (let v of vertices) {
-        v.update_pos();
-    }
+function reset() {
+    // Reset Game Variables
+    vertices.splice(0, vertices.length);
+    sides.splice(0, sides.length);
+    containers.splice(0, containers.length);
+    texts.splice(0, texts.length);
+    end = false;
 
-    if ((keypress["w"] || keypress["arrowup"]) && vertices[sides[player.sids[4]].ids[0]].y > vertices[sides[topw.sids[5]].ids[0]].y) {
-        player.change_pos(0, -1 * p_speed_multi, 0);
-    }
-    if ((keypress["a"] || keypress["arrowleft"]) && vertices[sides[player.sids[3]].ids[0]].x > vertices[sides[leftw.sids[2]].ids[0]].x) {
-        player.change_pos(-1 * p_speed_multi, 0, 0);
-    }
-    if ((keypress["s"] || keypress["arrowdown"]) && vertices[sides[player.sids[5]].ids[0]].y < vertices[sides[bottomw.sids[4]].ids[0]].y) {
-        player.change_pos(0, 1 * p_speed_multi, 0);
-    }
-    if ((keypress["d"] || keypress["arrowright"]) && vertices[sides[player.sids[2]].ids[0]].x < vertices[sides[rightw.sids[3]].ids[0]].x) {
-        player.change_pos(1 * p_speed_multi, 0, 0);
-    }
-    if (vertices[sides[ai.sids[4]].ids[0]].y < vertices[sides[topw.sids[5]].ids[0]].y) {
-        ai.change_pos(0, (vertices[sides[topw.sids[5]].ids[0]].y - vertices[sides[ai.sids[4]].ids[0]].y), 0);
-    }
-    if (vertices[sides[ai.sids[3]].ids[0]].x < vertices[sides[leftw.sids[2]].ids[0]].x) {
-        ai.change_pos((vertices[sides[leftw.sids[2]].ids[0]].x - vertices[sides[ai.sids[3]].ids[0]].x), 0, 0);
-    }
-    if (vertices[sides[ai.sids[5]].ids[0]].y > vertices[sides[bottomw.sids[4]].ids[0]].y) {
-        ai.change_pos(0, -(vertices[sides[ai.sids[5]].ids[0]].y - vertices[sides[bottomw.sids[4]].ids[0]].y), 0);
-    }
-    if (vertices[sides[ai.sids[2]].ids[0]].x > vertices[sides[rightw.sids[3]].ids[0]].x) {
-        ai.change_pos(-(vertices[sides[ai.sids[2]].ids[0]].x - vertices[sides[rightw.sids[3]].ids[0]].x), 0, 0);
-    }
-
-    render();
-
-    let ball_vel = pong.get_velocity()
-    if (collision(pong, leftw, "L") || collision(pong, rightw, "R")) {
-        pong.set_velocity(-(ball_vel[0] + (ball_vel[0]/Math.abs(ball_vel[0])) * x_bounce_multi), ball_vel[1], ball_vel[2]);
-    }
-    ball_vel = pong.get_velocity()
-    if (collision(pong, topw, "T") || collision(pong, bottomw, "b")) {
-        pong.set_velocity(ball_vel[0], -(ball_vel[1] + (ball_vel[1]/Math.abs(ball_vel[1])) * y_bounce_multi), ball_vel[2]);
-    }
-    ball_vel = pong.get_velocity()
-    if (collision(pong, player, "F") || collision(pong, ai, "B")) {
-        pong.set_velocity(ball_vel[0], ball_vel[1], -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
-    }
-
-    let bl_x = 0;
-    let bl_y = 0;
-    let ai_x = 0;
-    let ai_y = 0;
-    for (let vI of ai.vids) {
-        ai_x += vertices[vI].x;
-        ai_y += vertices[vI].y;
-    }
-    for (let vI of pong.vids) {
-        bl_x += vertices[vI].x;
-        bl_y += vertices[vI].y;
-    }
-    ai_x /= ai.vids.length;
-    ai_y /= ai.vids.length;
-    bl_x /= pong.vids.length;
-    bl_y /= pong.vids.length;
-
-    if (bl_x < ai_x) {
-        ai.change_pos(-1 * ai_speed_multi, 0, 0);
-    }
-    if (bl_x > ai_x) {
-        ai.change_pos(1 * ai_speed_multi, 0, 0);
-    }
-    if (bl_y < ai_y) {
-        ai.change_pos(0, -1 * ai_speed_multi, 0);
-    }
-    if (bl_y > ai_y) {
-        ai.change_pos(0, 1 * ai_speed_multi, 0);
-    }
-}
-
-var update_int;
-var pong;
-var ai;
-var player;
-var topw, leftw, rightw, bottomw;
-const cvs = new canvas("#999");
-window.addEventListener("load", e => {
     // Left Wall Vertices and Container
     let v0 = new vertex(-500, 500, -100);
     let v1 = new vertex(-600, 500, -100);
@@ -486,9 +438,151 @@ window.addEventListener("load", e => {
     player = new container([48, 49, 50, 51, 52, 53, 54, 55], [36, 37, 38, 39, 40, 41], "player")
 
     focal_length = Math.floor(Math.min(window.innerWidth, window.innerHeight) / 2);
+    let init_x = 0;
+    let init_y = 0;
+    let init_z = Math.floor(Math.random() * 11) - 5;
+    while (Math.abs(init_x) == Math.abs(init_y)) {
+        init_x = Math.floor(Math.random() * 11) - 5;
+        init_y = Math.floor(Math.random() * 11) - 5;
+    }
+    let posneg = Math.floor(Math.random() * 2);
+    if (posneg == 0) {
+        console.log(posneg, init_x, init_y, init_z)
+        if (init_x == 0) {
+            init_x = -1;
+        }
+        if (init_y == 0) {
+            init_y = -1;
+        }
+        if (init_z == 0) {
+            init_z = -1;
+        }
+    } else {
+        console.log(posneg, init_x, init_y, init_z)
+        if (init_x == 0) {
+            init_x = 1;
+        }
+        if (init_y == 0) {
+            init_y = 1;
+        }
+        if (init_z == 0) {
+            init_z = 1;
+        }
+    }
+    pong.set_velocity(init_x, init_y, init_z);
+
+    scoreText = new text(100, 100, "100px Consolas", "YOU: 0 | AI: 0");
+
     update_int = setInterval(() =>{
         update();
     }, 1);
+}
+
+function update() {
+    cvs.clear();
+    for (let v of vertices) {
+        v.update_pos();
+    }
+    for (let t of texts) {
+        t.update_pos();
+    }
+
+    if ((keypress["w"] || keypress["arrowup"]) && vertices[sides[player.sids[4]].ids[0]].y > vertices[sides[topw.sids[5]].ids[0]].y) {
+        player.change_pos(0, -1 * p_speed_multi, 0);
+    }
+    if ((keypress["a"] || keypress["arrowleft"]) && vertices[sides[player.sids[3]].ids[0]].x > vertices[sides[leftw.sids[2]].ids[0]].x) {
+        player.change_pos(-1 * p_speed_multi, 0, 0);
+    }
+    if ((keypress["s"] || keypress["arrowdown"]) && vertices[sides[player.sids[5]].ids[0]].y < vertices[sides[bottomw.sids[4]].ids[0]].y) {
+        player.change_pos(0, 1 * p_speed_multi, 0);
+    }
+    if ((keypress["d"] || keypress["arrowright"]) && vertices[sides[player.sids[2]].ids[0]].x < vertices[sides[rightw.sids[3]].ids[0]].x) {
+        player.change_pos(1 * p_speed_multi, 0, 0);
+    }
+    if (vertices[sides[ai.sids[4]].ids[0]].y < vertices[sides[topw.sids[5]].ids[0]].y) {
+        ai.change_pos(0, (vertices[sides[topw.sids[5]].ids[0]].y - vertices[sides[ai.sids[4]].ids[0]].y), 0);
+    }
+    if (vertices[sides[ai.sids[3]].ids[0]].x < vertices[sides[leftw.sids[2]].ids[0]].x) {
+        ai.change_pos((vertices[sides[leftw.sids[2]].ids[0]].x - vertices[sides[ai.sids[3]].ids[0]].x), 0, 0);
+    }
+    if (vertices[sides[ai.sids[5]].ids[0]].y > vertices[sides[bottomw.sids[4]].ids[0]].y) {
+        ai.change_pos(0, -(vertices[sides[ai.sids[5]].ids[0]].y - vertices[sides[bottomw.sids[4]].ids[0]].y), 0);
+    }
+    if (vertices[sides[ai.sids[2]].ids[0]].x > vertices[sides[rightw.sids[3]].ids[0]].x) {
+        ai.change_pos(-(vertices[sides[ai.sids[2]].ids[0]].x - vertices[sides[rightw.sids[3]].ids[0]].x), 0, 0);
+    }
+
+    if (vertices[sides[pong.sids[0]].ids[0]].z < vertices[sides[player.sids[0]].ids[0]].z) {
+        a_score++;
+        end = true;
+    }
+    if (vertices[sides[pong.sids[1]].ids[0]].z > vertices[sides[ai.sids[1]].ids[0]].z) {
+        p_score++;
+        end = true;
+    }
+    scoreText.update_text(`YOU: ${p_score} | AI: ${a_score}`);
+
+    render();
+
+    let ball_vel = pong.get_velocity()
+    if (collision(pong, leftw, "L") || collision(pong, rightw, "R")) {
+        pong.set_velocity(-(ball_vel[0] + (ball_vel[0]/Math.abs(ball_vel[0])) * x_bounce_multi), ball_vel[1], ball_vel[2]);
+    }
+    ball_vel = pong.get_velocity()
+    if (collision(pong, topw, "T") || collision(pong, bottomw, "b")) {
+        pong.set_velocity(ball_vel[0], -(ball_vel[1] + (ball_vel[1]/Math.abs(ball_vel[1])) * y_bounce_multi), ball_vel[2]);
+    }
+    ball_vel = pong.get_velocity()
+    if (collision(pong, player, "F") || collision(pong, ai, "B")) {
+        pong.set_velocity(ball_vel[0], ball_vel[1], -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
+    }
+
+    if (end) {
+        clearInterval(update_int);
+        reset();
+        return;
+    }
+
+    let bl_x = 0;
+    let bl_y = 0;
+    let ai_x = 0;
+    let ai_y = 0;
+    for (let vI of ai.vids) {
+        ai_x += vertices[vI].x;
+        ai_y += vertices[vI].y;
+    }
+    for (let vI of pong.vids) {
+        bl_x += vertices[vI].x;
+        bl_y += vertices[vI].y;
+    }
+    ai_x /= ai.vids.length;
+    ai_y /= ai.vids.length;
+    bl_x /= pong.vids.length;
+    bl_y /= pong.vids.length;
+
+    if (bl_x < ai_x) {
+        ai.change_pos(-1 * ai_speed_multi, 0, 0);
+    }
+    if (bl_x > ai_x) {
+        ai.change_pos(1 * ai_speed_multi, 0, 0);
+    }
+    if (bl_y < ai_y) {
+        ai.change_pos(0, -1 * ai_speed_multi, 0);
+    }
+    if (bl_y > ai_y) {
+        ai.change_pos(0, 1 * ai_speed_multi, 0);
+    }
+}
+
+var update_int;
+var pong;
+var ai;
+var player;
+var topw, leftw, rightw, bottomw;
+var scoreText;
+const cvs = new canvas("#999");
+window.addEventListener("load", e => {
+    reset();
 });
 window.addEventListener("resize", e => {
     focal_length = Math.floor(Math.min(window.innerWidth, window.innerHeight) / 2);
