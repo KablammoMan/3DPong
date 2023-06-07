@@ -12,10 +12,18 @@ const p_speed_multi = 5;
 const x_bounce_multi = 0.1; // Increase Amount per X bounce
 const y_bounce_multi = 0.1; // Increase Amount per Y bounce
 const z_bounce_multi = 0.1; // Increase Amount per Z bounce
+const cvs = new canvas("#999");
 var focal_length = 60;
 var p_score = 0;
 var a_score = 0;
 var end = false;
+var update_int;
+var pong;
+var ai;
+var player;
+var topw, leftw, rightw, bottomw;
+var scoreText;
+
 class vertex {
     constructor(x, y, z) {
         this.x = x;
@@ -125,6 +133,7 @@ class canvas {
 
 
 function render() {
+    // Render 3D Shapes
     for (let c of containers) {
         // Determine what sides to render
         let render = [
@@ -207,6 +216,8 @@ function render() {
             }
         }
     }
+
+    // Render Text
     for (let t of texts) {
         cvs.ctx.font = t.font;
         cvs.ctx.fillStyle = "#000";
@@ -574,13 +585,6 @@ function update() {
     }
 }
 
-var update_int;
-var pong;
-var ai;
-var player;
-var topw, leftw, rightw, bottomw;
-var scoreText;
-const cvs = new canvas("#999");
 window.addEventListener("load", e => {
     reset();
 });
