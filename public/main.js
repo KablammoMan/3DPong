@@ -8,9 +8,9 @@ const p_thickness = 20;
 const area_length = 1000;
 const ai_speed_multi = 10;
 const p_speed_multi = 10;
-const x_bounce_multi = 0.5;
-const y_bounce_multi = 0.5;
-const z_bounce_multi = 0.5;
+const x_bounce_multi = 0.1; // Increase Amount per X bounce
+const y_bounce_multi = 0.1; // Increase Amount per Y bounce
+const z_bounce_multi = 0.1; // Increase Amount per Z bounce
 var focal_length = 60;
 class vertex {
     constructor(x, y, z) {
@@ -330,6 +330,7 @@ function update() {
     ai_y /= ai.vids.length;
     bl_x /= pong.vids.length;
     bl_y /= pong.vids.length;
+
     if (bl_x < ai_x) {
         ai.change_pos(-1 * ai_speed_multi, 0, 0);
     }
