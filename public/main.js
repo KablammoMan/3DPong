@@ -208,10 +208,10 @@ function collision(ball, cont, face) {
             if (
                 vertices[bS.ids[0]].z <= vertices[cS.ids[0]].z &&
                 (
-                    (bR > cL && bR < cR && bb > cT && bb < cb) ||
-                    (bL > cL && bL < cR && bb > cT && bb < cb) ||
-                    (bR > cL && bR < cR && bT > cT && bT < cb) ||
-                    (bL > cL && bL < cR && bT > cT && bT < cb)
+                    (bR > cL && bR < cR && bb > cT && bb < cb && bF < cB && bF > cF) ||
+                    (bL > cL && bL < cR && bb > cT && bb < cb && bF < cB && bF > cF) ||
+                    (bR > cL && bR < cR && bT > cT && bT < cb && bF < cB && bF > cF) ||
+                    (bL > cL && bL < cR && bT > cT && bT < cb && bF < cB && bF > cF)
                 )
             ) {
                 return true;
@@ -225,10 +225,10 @@ function collision(ball, cont, face) {
             if (
                 vertices[bS.ids[0]].z >= vertices[cS.ids[0]].z &&
                 (
-                    (bR > cL && bR < cR && bb > cT && bb < cb) ||
-                    (bL > cL && bL < cR && bb > cT && bb < cb) ||
-                    (bR > cL && bR < cR && bT > cT && bT < cb) ||
-                    (bL > cL && bL < cR && bT > cT && bT < cb)
+                    (bR > cL && bR < cR && bb > cT && bb < cb && bB < cB && bB > cF) ||
+                    (bL > cL && bL < cR && bb > cT && bb < cb && bB < cB && bB > cF) ||
+                    (bR > cL && bR < cR && bT > cT && bT < cb && bB < cB && bB > cF) ||
+                    (bL > cL && bL < cR && bT > cT && bT < cb && bB < cB && bB > cF)
                 )
             ) {
                 return true;
@@ -294,16 +294,16 @@ function update() {
         player.change_pos(1 * p_speed_multi, 0, 0);
     }
     if (vertices[sides[ai.sids[4]].ids[0]].y < vertices[sides[topw.sids[5]].ids[0]].y) {
-        ai.set_velocity(0, 0, 0);
+        ai.change_pos(0, (vertices[sides[topw.sids[5]].ids[0]].y - vertices[sides[ai.sids[4]].ids[0]].y), 0);
     }
     if (vertices[sides[ai.sids[3]].ids[0]].x < vertices[sides[leftw.sids[2]].ids[0]].x) {
-        ai.set_velocity(0, 0, 0);
+        ai.change_pos((vertices[sides[leftw.sids[2]].ids[0]].x - vertices[sides[ai.sids[3]].ids[0]].x), 0, 0);
     }
     if (vertices[sides[ai.sids[5]].ids[0]].y > vertices[sides[bottomw.sids[4]].ids[0]].y) {
-        ai.set_velocity(0, 0, 0);
+        ai.change_pos(0, -(vertices[sides[ai.sids[5]].ids[0]].y - vertices[sides[bottomw.sids[4]].ids[0]].y), 0);
     }
     if (vertices[sides[ai.sids[2]].ids[0]].x > vertices[sides[rightw.sids[3]].ids[0]].x) {
-        ai.set_velocity(0, 0, 0);
+        ai.change_pos(-(vertices[sides[ai.sids[2]].ids[0]].x - vertices[sides[rightw.sids[3]].ids[0]].x), 0, 0);
     }
 
     render();
@@ -321,27 +321,32 @@ function update() {
         pong.set_velocity(ball_vel[0], ball_vel[1], -ball_vel[2]);
     }
 
-    let col_x = (vertices[sides[ai.sids[0]].ids[0]].z - vertices[sides[pong.sids[0]].ids[0]].z)/pong.get_velocity()[2]*pong.get_velocity()[0];
-    let col_y = (vertices[sides[ai.sids[0]].ids[0]].z - vertices[sides[pong.sids[0]].ids[0]].z)/pong.get_velocity()[2]*pong.get_velocity()[1];
+    let bl_x = 0;
+    let bl_y = 0;
     let ai_x = 0;
     let ai_y = 0;
     for (let vI of ai.vids) {
         ai_x += vertices[vI].x;
         ai_y += vertices[vI].y;
     }
+    for (let vI of pong.vids) {
+        bl_x += vertices[vI].x;
+        bl_y += vertices[vI].y;
+    }
     ai_x /= ai.vids.length;
     ai_y /= ai.vids.length;
-
-    if (col_x < ai_x) {
+    bl_x /= pong.vids.length;
+    bl_y /= pong.vids.length;
+    if (bl_x < ai_x) {
         ai.change_pos(-1 * ai_speed_multi, 0, 0);
     }
-    if (col_x > ai_x) {
+    if (bl_x > ai_x) {
         ai.change_pos(1 * ai_speed_multi, 0, 0);
     }
-    if (col_y < ai_y) {
+    if (bl_y < ai_y) {
         ai.change_pos(0, -1 * ai_speed_multi, 0);
     }
-    if (col_y > ai_y) {
+    if (bl_y > ai_y) {
         ai.change_pos(0, 1 * ai_speed_multi, 0);
     }
 }
