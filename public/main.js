@@ -6,8 +6,11 @@ const ball_size = 50;
 const paddle_size = 100;
 const p_thickness = 20;
 const area_length = 1000;
-const ai_speed_multi = 2;
-const p_speed_multi = 2;
+const ai_speed_multi = 100;
+const p_speed_multi = 5;
+const x_bounce_multi = 0.5;
+const y_bounce_multi = 0.5;
+const z_bounce_multi = 0.5;
 var focal_length = 60;
 class vertex {
     constructor(x, y, z) {
@@ -310,15 +313,15 @@ function update() {
 
     let ball_vel = pong.get_velocity()
     if (collision(pong, leftw, "L") || collision(pong, rightw, "R")) {
-        pong.set_velocity(-ball_vel[0], ball_vel[1], ball_vel[2]);
+        pong.set_velocity(-(ball_vel[0] + (ball_vel[0]/Math.abs(ball_vel[0])) * x_bounce_multi), ball_vel[1], ball_vel[2]);
     }
     ball_vel = pong.get_velocity()
     if (collision(pong, topw, "T") || collision(pong, bottomw, "b")) {
-        pong.set_velocity(ball_vel[0], -ball_vel[1], ball_vel[2]);
+        pong.set_velocity(ball_vel[0], -(ball_vel[1] + (ball_vel[1]/Math.abs(ball_vel[1])) * y_bounce_multi), ball_vel[2]);
     }
     ball_vel = pong.get_velocity()
     if (collision(pong, player, "F") || collision(pong, ai, "B")) {
-        pong.set_velocity(ball_vel[0], ball_vel[1], -ball_vel[2]);
+        pong.set_velocity(ball_vel[0], ball_vel[1], -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
     }
 
     let bl_x = 0;
