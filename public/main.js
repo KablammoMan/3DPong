@@ -7,7 +7,7 @@ const paddle_size = 100;
 const p_thickness = 20;
 const area_length = 1000;
 const ai_speed_multi = 100;
-const p_speed_multi = 5;
+const p_speed_multi = 10;
 const x_bounce_multi = 0.5;
 const y_bounce_multi = 0.5;
 const z_bounce_multi = 0.5;
@@ -206,16 +206,11 @@ function collision(ball, cont, face) {
         let cb = vertices[sides[cont.sids[5]].ids[0]].y;
 
         if (bC == 0 && face == "F") {
-            let cI = cont.sids[1];
-            let cS = sides[cI];
             if (
-                vertices[bS.ids[0]].z <= vertices[cS.ids[0]].z &&
-                (
-                    (bR > cL && bR < cR && bb > cT && bb < cb && bF < cB && bF > cF) ||
-                    (bL > cL && bL < cR && bb > cT && bb < cb && bF < cB && bF > cF) ||
-                    (bR > cL && bR < cR && bT > cT && bT < cb && bF < cB && bF > cF) ||
-                    (bL > cL && bL < cR && bT > cT && bT < cb && bF < cB && bF > cF)
-                )
+                (bR > cL && bR < cR && bb > cT && bb < cb && bF < cB && bF > cF) ||
+                (bL > cL && bL < cR && bb > cT && bb < cb && bF < cB && bF > cF) ||
+                (bR > cL && bR < cR && bT > cT && bT < cb && bF < cB && bF > cF) ||
+                (bL > cL && bL < cR && bT > cT && bT < cb && bF < cB && bF > cF)
             ) {
                 return true;
             } else {
@@ -223,16 +218,11 @@ function collision(ball, cont, face) {
             }
         }
         if (bC == 1 && face == "B") {
-            let cI = cont.sids[0];
-            let cS = sides[cI];
             if (
-                vertices[bS.ids[0]].z >= vertices[cS.ids[0]].z &&
-                (
-                    (bR > cL && bR < cR && bb > cT && bb < cb && bB < cB && bB > cF) ||
-                    (bL > cL && bL < cR && bb > cT && bb < cb && bB < cB && bB > cF) ||
-                    (bR > cL && bR < cR && bT > cT && bT < cb && bB < cB && bB > cF) ||
-                    (bL > cL && bL < cR && bT > cT && bT < cb && bB < cB && bB > cF)
-                )
+                (bR > cL && bR < cR && bb > cT && bb < cb && bB < cB && bB > cF) ||
+                (bL > cL && bL < cR && bb > cT && bb < cb && bB < cB && bB > cF) ||
+                (bR > cL && bR < cR && bT > cT && bT < cb && bB < cB && bB > cF) ||
+                (bL > cL && bL < cR && bT > cT && bT < cb && bB < cB && bB > cF)
             ) {
                 return true;
             } else {
