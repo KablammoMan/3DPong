@@ -125,6 +125,7 @@ var focal_length = 60;
 var p_score = 0;
 var a_score = 0;
 var end = false;
+var rebound_player;
 var update_int;
 var pong;
 var ai;
@@ -486,7 +487,6 @@ function reset() {
     }
     let posneg = Math.floor(Math.random() * 2);
     if (posneg == 0) {
-        console.log(posneg, init_x, init_y, init_z)
         if (init_x == 0) {
             init_x = -1;
         }
@@ -497,7 +497,6 @@ function reset() {
             init_z = -1;
         }
     } else {
-        console.log(posneg, init_x, init_y, init_z)
         if (init_x == 0) {
             init_x = 1;
         }
@@ -513,6 +512,11 @@ function reset() {
     lefti.set_velocity(0, 0, init_z);
     topi.set_velocity(0, 0, init_z);
     bottomi.set_velocity(0, 0, init_z);
+    if (init_z < 0) {
+        rebound_player = true;
+    } else {
+        rebound_player = false;
+    }
 
     scoreText = new text(100, 100, "100px Consolas", "YOU: 0 | AI: 0");
 
@@ -578,12 +582,13 @@ function update() {
         pong.set_velocity(ball_vel[0], -(ball_vel[1] + (ball_vel[1]/Math.abs(ball_vel[1])) * y_bounce_multi), ball_vel[2]);
     }
     ball_vel = pong.get_velocity()
-    if (collision(pong, player) || collision(pong, ai)) {
+    if ((collision(pong, player) && (rebound_player)) || (collision(pong, ai) && (!rebound_player))) {
         pong.set_velocity(ball_vel[0], ball_vel[1], -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
         righti.set_velocity(0, 0, -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
         lefti.set_velocity(0, 0, -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
         topi.set_velocity(0, 0, -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
         bottomi.set_velocity(0, 0, -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
+        rebound_player = !(rebound_player);
     }
 
     if (end) {
