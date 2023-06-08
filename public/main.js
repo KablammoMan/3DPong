@@ -630,18 +630,19 @@ function update() {
         ai.change_pos(0, 1 * ai_speed_multi, 0);
     }
 
-    if (bl_x < pl_x) {
-        player.change_pos(-1 * p_speed_multi, 0, 0);
-    }
-    if (bl_x > pl_x) {
-        player.change_pos(1 * p_speed_multi, 0, 0);
-    }
-    if (bl_y < pl_y) {
-        player.change_pos(0, -1 * p_speed_multi, 0);
-    }
-    if (bl_y > pl_y) {
-        player.change_pos(0, 1 * p_speed_multi, 0);
-    }
+    // Uncomment if player should also be controlled by AI
+    // if (bl_x < pl_x) {
+    //     player.change_pos(-1 * p_speed_multi, 0, 0);
+    // }
+    // if (bl_x > pl_x) {
+    //     player.change_pos(1 * p_speed_multi, 0, 0);
+    // }
+    // if (bl_y < pl_y) {
+    //     player.change_pos(0, -1 * p_speed_multi, 0);
+    // }
+    // if (bl_y > pl_y) {
+    //     player.change_pos(0, 1 * p_speed_multi, 0);
+    // }
 }
 
 
