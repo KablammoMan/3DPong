@@ -226,85 +226,34 @@ function render() {
     }
 }
 
-function collision(ball, cont, face) {
-    for (let bC = 0; bC < ball.sids.length; bC++) {
-        let sI = ball.sids[bC];
-        let bS = sides[sI];
+function collision(ball, cont) {
+    let bF = vertices[sides[ball.sids[0]].ids[0]].z;
+    let bB = vertices[sides[ball.sids[1]].ids[0]].z;
+    let bR = vertices[sides[ball.sids[2]].ids[0]].x;
+    let bL = vertices[sides[ball.sids[3]].ids[0]].x;
+    let bT = vertices[sides[ball.sids[4]].ids[0]].y;
+    let bb = vertices[sides[ball.sids[5]].ids[0]].y;
 
-        let bF = vertices[sides[ball.sids[0]].ids[0]].z;
-        let bB = vertices[sides[ball.sids[1]].ids[0]].z;
-        let bR = vertices[sides[ball.sids[2]].ids[0]].x;
-        let bL = vertices[sides[ball.sids[3]].ids[0]].x;
-        let bT = vertices[sides[ball.sids[4]].ids[0]].y;
-        let bb = vertices[sides[ball.sids[5]].ids[0]].y;
+    let cF = vertices[sides[cont.sids[0]].ids[0]].z;
+    let cB = vertices[sides[cont.sids[1]].ids[0]].z;
+    let cR = vertices[sides[cont.sids[2]].ids[0]].x;
+    let cL = vertices[sides[cont.sids[3]].ids[0]].x;
+    let cT = vertices[sides[cont.sids[4]].ids[0]].y;
+    let cb = vertices[sides[cont.sids[5]].ids[0]].y;
 
-        let cF = vertices[sides[cont.sids[0]].ids[0]].z;
-        let cB = vertices[sides[cont.sids[1]].ids[0]].z;
-        let cR = vertices[sides[cont.sids[2]].ids[0]].x;
-        let cL = vertices[sides[cont.sids[3]].ids[0]].x;
-        let cT = vertices[sides[cont.sids[4]].ids[0]].y;
-        let cb = vertices[sides[cont.sids[5]].ids[0]].y;
-
-        if (bC == 0 && face == "F") {
-            if (
-                (bR > cL && bR < cR && bb > cT && bb < cb && bF < cB && bF > cF) ||
-                (bL > cL && bL < cR && bb > cT && bb < cb && bF < cB && bF > cF) ||
-                (bR > cL && bR < cR && bT > cT && bT < cb && bF < cB && bF > cF) ||
-                (bL > cL && bL < cR && bT > cT && bT < cb && bF < cB && bF > cF)
-            ) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        if (bC == 1 && face == "B") {
-            if (
-                (bR > cL && bR < cR && bb > cT && bb < cb && bB < cB && bB > cF) ||
-                (bL > cL && bL < cR && bb > cT && bb < cb && bB < cB && bB > cF) ||
-                (bR > cL && bR < cR && bT > cT && bT < cb && bB < cB && bB > cF) ||
-                (bL > cL && bL < cR && bT > cT && bT < cb && bB < cB && bB > cF)
-            ) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        if (bC == 2 && face == "R") {
-            let cI = cont.sids[3];
-            let cS = sides[cI];
-            if (vertices[bS.ids[0]].x >= vertices[cS.ids[0]].x) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        if (bC == 3 && face == "L") {
-            let cI = cont.sids[2];
-            let cS = sides[cI];
-            if (vertices[bS.ids[0]].x <= vertices[cS.ids[0]].x) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        if (bC == 4 && face == "T") {
-            let cI = cont.sids[5];
-            let cS = sides[cI];
-            if (vertices[bS.ids[0]].y <= vertices[cS.ids[0]].y) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        if (bC == 5 && face == "b") {
-            let cI = cont.sids[4];
-            let cS = sides[cI];
-            if (vertices[bS.ids[0]].y >= vertices[cS.ids[0]].y) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+    if (
+        (bR > cL && bR < cR && bb > cT && bb < cb && bF < cB && bF > cF) || // Front Right Bottom
+        (bL > cL && bL < cR && bb > cT && bb < cb && bF < cB && bF > cF) || // Front Left  Bottom
+        (bR > cL && bR < cR && bT > cT && bT < cb && bF < cB && bF > cF) || // Front Right Top
+        (bL > cL && bL < cR && bT > cT && bT < cb && bF < cB && bF > cF) || // Front Left  Top
+        (bR > cL && bR < cR && bb > cT && bb < cb && bB < cB && bB > cF) || // Back  Right Bottom
+        (bL > cL && bL < cR && bb > cT && bb < cb && bB < cB && bB > cF) || // Back  Left  Bottom
+        (bR > cL && bR < cR && bT > cT && bT < cb && bB < cB && bB > cF) || // Back  Right Top
+        (bL > cL && bL < cR && bT > cT && bT < cb && bB < cB && bB > cF)    // Back  Left  Top
+    ) {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -537,15 +486,15 @@ function update() {
     render();
 
     let ball_vel = pong.get_velocity()
-    if (collision(pong, leftw, "L") || collision(pong, rightw, "R")) {
+    if (collision(pong, leftw) || collision(pong, rightw)) {
         pong.set_velocity(-(ball_vel[0] + (ball_vel[0]/Math.abs(ball_vel[0])) * x_bounce_multi), ball_vel[1], ball_vel[2]);
     }
     ball_vel = pong.get_velocity()
-    if (collision(pong, topw, "T") || collision(pong, bottomw, "b")) {
+    if (collision(pong, topw) || collision(pong, bottomw)) {
         pong.set_velocity(ball_vel[0], -(ball_vel[1] + (ball_vel[1]/Math.abs(ball_vel[1])) * y_bounce_multi), ball_vel[2]);
     }
     ball_vel = pong.get_velocity()
-    if (collision(pong, player, "F") || collision(pong, ai, "B")) {
+    if (collision(pong, player) || collision(pong, ai)) {
         pong.set_velocity(ball_vel[0], ball_vel[1], -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
     }
 
