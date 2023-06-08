@@ -1,4 +1,3 @@
-
 class vertex {
     constructor(x, y, z) {
         this.x = x;
@@ -106,6 +105,7 @@ class canvas {
     }
 }
 
+
 const vertices = [];
 const sides = [];
 const containers = [];
@@ -131,6 +131,7 @@ var ai;
 var player;
 var topw, leftw, rightw, bottomw;
 var scoreText;
+
 
 function render() {
     // Render 3D Shapes
@@ -584,6 +585,7 @@ function update() {
         ai.change_pos(0, 1 * ai_speed_multi, 0);
     }
 }
+
 
 window.addEventListener("load", e => {
     reset();
