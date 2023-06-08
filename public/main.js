@@ -130,6 +130,7 @@ var pong;
 var ai;
 var player;
 var topw, leftw, rightw, bottomw;
+var topi, lefti, righti, bottomi;
 var scoreText;
 
 
@@ -340,63 +341,140 @@ function reset() {
     let s23 = new side([27, 26, 30, 31], "#099"); // Bottom
 
     bottomw = new container([24, 25, 26, 27, 28, 29, 30, 31], [18, 19, 20, 21, 22, 23], "bottom");
+
+    // Indicator Right
+    let v32 = new vertex(500, 500, -ball_size + area_length/2);
+    let v33 = new vertex(500, 500, -ball_size + area_length/2);
+    let v34 = new vertex(500, -500, -ball_size + area_length/2);
+    let v35 = new vertex(500, -500, -ball_size + area_length/2);
+    let v36 = new vertex(500, 500, ball_size + area_length/2);
+    let v37 = new vertex(500, 500, ball_size + area_length/2);
+    let v38 = new vertex(500, -500, ball_size + area_length/2);
+    let v39 = new vertex(500, -500, ball_size + area_length/2);
+
+    let s24 = new side([32, 33, 34, 35], "#0cc"); // Front
+    let s25 = new side([36, 37, 38, 39], "#0cc"); // Back
+    let s26 = new side([32, 35, 39, 36], "#0cc"); // Right
+    let s27 = new side([33, 34, 38, 37], "#0cc"); // Left
+    let s28 = new side([35, 34, 38, 39], "#0cc"); // Top
+    let s29 = new side([32, 33, 37, 36], "#0cc"); // Bottom
+
+    righti = new container([32, 33, 34, 35, 36, 37, 38, 39], [24, 25, 26, 27, 28, 29], "righti");
+
+    // Indicator Left
+    let v40 = new vertex(-500, 500, -ball_size + area_length/2);
+    let v41 = new vertex(-500, 500, -ball_size + area_length/2);
+    let v42 = new vertex(-500, -500, -ball_size + area_length/2);
+    let v43 = new vertex(-500, -500, -ball_size + area_length/2);
+    let v44 = new vertex(-500, 500, ball_size + area_length/2);
+    let v45 = new vertex(-500, 500, ball_size + area_length/2);
+    let v46 = new vertex(-500, -500, ball_size + area_length/2);
+    let v47 = new vertex(-500, -500, ball_size + area_length/2);
+
+    let s30 = new side([40, 41, 42, 43], "#0cc"); // Front
+    let s31 = new side([44, 45, 46, 47], "#0cc"); // Back
+    let s32 = new side([40, 43, 47, 44], "#0cc"); // Right
+    let s33 = new side([41, 42, 46, 45], "#0cc"); // Left
+    let s34 = new side([43, 42, 46, 47], "#0cc"); // Top
+    let s35 = new side([40, 41, 45, 44], "#0cc"); // Bottom
+
+    lefti = new container([40, 41, 42, 43, 44, 45, 46, 47], [30, 31, 32, 33, 34, 35], "lefti");
+
+    // Indicator Top
+    let v48 = new vertex(500, -500, -ball_size + area_length/2);
+    let v49 = new vertex(-500, -500, -ball_size + area_length/2);
+    let v50 = new vertex(-500, -500, -ball_size + area_length/2);
+    let v51 = new vertex(500, -500, -ball_size + area_length/2);
+    let v52 = new vertex(500, -500, ball_size + area_length/2);
+    let v53 = new vertex(-500, -500, ball_size + area_length/2);
+    let v54 = new vertex(-500, -500, ball_size + area_length/2);
+    let v55 = new vertex(500, -500, ball_size + area_length/2);
+
+    let s36 = new side([48, 49, 50, 51], "#0cc"); // Front
+    let s37 = new side([52, 53, 54, 55], "#0cc"); // Back
+    let s38 = new side([48, 51, 55, 52], "#0cc"); // Right
+    let s39 = new side([49, 50, 54, 53], "#0cc"); // Left
+    let s40 = new side([51, 50, 54, 55], "#0cc"); // Top
+    let s41 = new side([48, 49, 53, 52], "#0cc"); // Back
+
+    topi = new container([48, 49, 50, 51, 52, 53, 54, 55], [36, 37, 38, 39, 40, 41], "topi");
+
+    // Indicator Bottom
+    let v56 = new vertex(500, 500, -ball_size + area_length/2);
+    let v57 = new vertex(-500, 500, -ball_size + area_length/2);
+    let v58 = new vertex(-500, 500, -ball_size + area_length/2);
+    let v59 = new vertex(500, 500, -ball_size + area_length/2);
+    let v60 = new vertex(500, 500, ball_size + area_length/2);
+    let v61 = new vertex(-500, 500, ball_size + area_length/2);
+    let v62 = new vertex(-500, 500, ball_size + area_length/2);
+    let v63 = new vertex(500, 500, ball_size + area_length/2);
+
+    let s42 = new side([56, 57, 58, 59], "#0cc"); // Front
+    let s43 = new side([60, 61, 62, 63], "#0cc"); // Back
+    let s44 = new side([56, 59, 63, 60], "#0cc"); // Right
+    let s45 = new side([57, 58, 62, 61], "#0cc"); // Left
+    let s46 = new side([59, 58, 62, 63], "#0cc"); // Top
+    let s47 = new side([56, 57, 61, 60], "#0cc"); // Back
+
+    bottomi = new container([56, 57, 58, 59, 60, 61, 62, 63], [42, 43, 44, 45, 46, 47], "bottomi");
+
     
     // AI Paddle Vertices, Sides and Container
-    let v32 = new vertex(paddle_size, paddle_size, -100 + area_length - p_thickness);
-    let v33 = new vertex(-paddle_size, paddle_size, -100 + area_length - p_thickness);
-    let v34 = new vertex(-paddle_size, -paddle_size, -100 + area_length - p_thickness);
-    let v35 = new vertex(paddle_size, -paddle_size, -100 + area_length - p_thickness);
-    let v36 = new vertex(paddle_size, paddle_size, -100 + area_length);
-    let v37 = new vertex(-paddle_size, paddle_size, -100 + area_length);
-    let v38 = new vertex(-paddle_size, -paddle_size, -100 + area_length);
-    let v39 = new vertex(paddle_size, -paddle_size, -100 + area_length);
+    let v64 = new vertex(paddle_size, paddle_size, -100 + area_length - p_thickness);
+    let v65 = new vertex(-paddle_size, paddle_size, -100 + area_length - p_thickness);
+    let v66 = new vertex(-paddle_size, -paddle_size, -100 + area_length - p_thickness);
+    let v67 = new vertex(paddle_size, -paddle_size, -100 + area_length - p_thickness);
+    let v68 = new vertex(paddle_size, paddle_size, -100 + area_length);
+    let v69 = new vertex(-paddle_size, paddle_size, -100 + area_length);
+    let v70 = new vertex(-paddle_size, -paddle_size, -100 + area_length);
+    let v71 = new vertex(paddle_size, -paddle_size, -100 + area_length);
 
-    let s24 = new side([32, 33, 34, 35], "#c00"); // Front
-    let s25 = new side([36, 37, 38, 39], "#c00"); // Back
-    let s26 = new side([32, 35, 39, 36], "#c00"); // Right
-    let s27 = new side([33, 34, 38, 37], "#c00"); // Left
-    let s28 = new side([35, 34, 38, 39], "#c00"); // Top
-    let s29 = new side([32, 33, 37, 36], "#c00"); // Bottom
+    let s48 = new side([64, 65, 66, 67], "#c00"); // Front
+    let s49 = new side([68, 69, 70, 71], "#c00"); // Back
+    let s50 = new side([64, 67, 71, 68], "#c00"); // Right
+    let s51 = new side([65, 66, 70, 69], "#c00"); // Left
+    let s52 = new side([67, 66, 70, 71], "#c00"); // Top
+    let s53 = new side([64, 65, 69, 68], "#c00"); // Bottom
 
-    ai = new container([32, 33, 34, 35, 36, 37, 38, 39], [24, 25, 26, 27, 28, 29], "ai");
+    ai = new container([64, 65, 66, 67, 68, 69, 70, 71], [48, 49, 50, 51, 52, 53], "ai");
     
     // Ball Vertices, Sides and Container
-    let v40 = new vertex(ball_size, ball_size, ball_size + area_length/2);
-    let v41 = new vertex(ball_size, ball_size, -ball_size + area_length/2);
-    let v42 = new vertex(ball_size, -ball_size, -ball_size + area_length/2);
-    let v43 = new vertex(ball_size, -ball_size, ball_size + area_length/2);
-    let v44 = new vertex(-ball_size, -ball_size, ball_size + area_length/2);
-    let v45 = new vertex(-ball_size, ball_size, ball_size + area_length/2);
-    let v46 = new vertex(-ball_size, ball_size, -ball_size + area_length/2);
-    let v47 = new vertex(-ball_size, -ball_size, -ball_size + area_length/2);
+    let v72 = new vertex(ball_size, ball_size, ball_size + area_length/2);
+    let v73 = new vertex(ball_size, ball_size, -ball_size + area_length/2);
+    let v74 = new vertex(ball_size, -ball_size, -ball_size + area_length/2);
+    let v75 = new vertex(ball_size, -ball_size, ball_size + area_length/2);
+    let v76 = new vertex(-ball_size, -ball_size, ball_size + area_length/2);
+    let v77 = new vertex(-ball_size, ball_size, ball_size + area_length/2);
+    let v78 = new vertex(-ball_size, ball_size, -ball_size + area_length/2);
+    let v79 = new vertex(-ball_size, -ball_size, -ball_size + area_length/2);
 
-    let s30 = new side([41, 46, 47, 42], "#cc0"); // Front
-    let s31 = new side([40, 45, 44, 43], "#cc0"); // Back
-    let s32 = new side([40, 41, 42, 43], "#cc0"); // Right
-    let s33 = new side([44, 45, 46, 47], "#cc0"); // Left
-    let s34 = new side([42, 43, 44, 47], "#cc0"); // Top
-    let s35 = new side([40, 41, 46, 45], "#cc0"); // Bottom
+    let s54 = new side([73, 78, 79, 74], "#cc0"); // Front
+    let s55 = new side([72, 77, 76, 75], "#cc0"); // Back
+    let s56 = new side([72, 73, 74, 75], "#cc0"); // Right
+    let s57 = new side([76, 77, 78, 79], "#cc0"); // Left
+    let s58 = new side([74, 75, 76, 79], "#cc0"); // Top
+    let s59 = new side([72, 73, 78, 77], "#cc0"); // Bottom
 
-    pong = new container([40, 41, 42, 43, 44, 45, 46, 47], [30, 31, 32, 33, 34, 35], "ball");
+    pong = new container([72, 73, 74, 75, 76, 77, 78, 79], [54, 55, 56, 57, 58, 59], "ball");
 
     // Player Paddle Vertices, Sides and Container
-    let v48 = new vertex(100, 100, -100);
-    let v49 = new vertex(-100, 100, -100);
-    let v50 = new vertex(-100, -100, -100);
-    let v51 = new vertex(100, -100, -100);
-    let v52 = new vertex(100, 100, -100 + p_thickness);
-    let v53 = new vertex(-100, 100, -100 + p_thickness);
-    let v54 = new vertex(-100, -100, -100 + p_thickness);
-    let v55 = new vertex(100, -100, -100 + p_thickness);
+    let v80 = new vertex(100, 100, -100);
+    let v81 = new vertex(-100, 100, -100);
+    let v82 = new vertex(-100, -100, -100);
+    let v83 = new vertex(100, -100, -100);
+    let v84 = new vertex(100, 100, -100 + p_thickness);
+    let v85 = new vertex(-100, 100, -100 + p_thickness);
+    let v86 = new vertex(-100, -100, -100 + p_thickness);
+    let v87 = new vertex(100, -100, -100 + p_thickness);
 
-    let s36 = new side([48, 49, 50, 51], "#0c0"); // Front
-    let s37 = new side([52, 53, 54, 55], "#0c0"); // Back
-    let s38 = new side([48, 51, 55, 52], "#0c0"); // Right
-    let s39 = new side([49, 50, 54, 53], "#0c0"); // Left
-    let s40 = new side([51, 50, 54, 55], "#0c0"); // Top
-    let s41 = new side([48, 49, 53, 52], "#0c0"); // Bottom
+    let s60 = new side([80, 81, 82, 83], "#0c0"); // Front
+    let s61 = new side([84, 85, 86, 87], "#0c0"); // Back
+    let s62 = new side([80, 83, 87, 84], "#0c0"); // Right
+    let s63 = new side([81, 82, 86, 85], "#0c0"); // Left
+    let s64 = new side([83, 82, 86, 87], "#0c0"); // Top
+    let s65 = new side([80, 81, 85, 84], "#0c0"); // Bottom
 
-    player = new container([48, 49, 50, 51, 52, 53, 54, 55], [36, 37, 38, 39, 40, 41], "player")
+    player = new container([80, 81, 82, 83, 84, 85, 86, 87], [60, 61, 62, 63, 64, 65], "player");
 
     focal_length = Math.floor(Math.min(window.innerWidth, window.innerHeight) / 2);
     let init_x = 0;
@@ -431,6 +509,10 @@ function reset() {
         }
     }
     pong.set_velocity(init_x, init_y, init_z);
+    righti.set_velocity(0, 0, init_z);
+    lefti.set_velocity(0, 0, init_z);
+    topi.set_velocity(0, 0, init_z);
+    bottomi.set_velocity(0, 0, init_z);
 
     scoreText = new text(100, 100, "100px Consolas", "YOU: 0 | AI: 0");
 
@@ -473,6 +555,8 @@ function update() {
         ai.change_pos(-(vertices[sides[ai.sids[2]].ids[0]].x - vertices[sides[rightw.sids[3]].ids[0]].x), 0, 0);
     }
 
+
+
     if (vertices[sides[pong.sids[0]].ids[0]].z < vertices[sides[player.sids[0]].ids[0]].z) {
         a_score++;
         end = true;
@@ -496,6 +580,10 @@ function update() {
     ball_vel = pong.get_velocity()
     if (collision(pong, player) || collision(pong, ai)) {
         pong.set_velocity(ball_vel[0], ball_vel[1], -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
+        righti.set_velocity(0, 0, -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
+        lefti.set_velocity(0, 0, -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
+        topi.set_velocity(0, 0, -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
+        bottomi.set_velocity(0, 0, -(ball_vel[2] + (ball_vel[2]/Math.abs(ball_vel[2])) * z_bounce_multi));
     }
 
     if (end) {
@@ -508,9 +596,15 @@ function update() {
     let bl_y = 0;
     let ai_x = 0;
     let ai_y = 0;
+    let pl_x = 0;
+    let pl_y = 0;
     for (let vI of ai.vids) {
         ai_x += vertices[vI].x;
         ai_y += vertices[vI].y;
+    }
+    for (let vI of player.vids) {
+        pl_x += vertices[vI].x;
+        pl_y += vertices[vI].y;
     }
     for (let vI of pong.vids) {
         bl_x += vertices[vI].x;
@@ -518,6 +612,8 @@ function update() {
     }
     ai_x /= ai.vids.length;
     ai_y /= ai.vids.length;
+    pl_x /= player.vids.length;
+    pl_y /= player.vids.length;
     bl_x /= pong.vids.length;
     bl_y /= pong.vids.length;
 
@@ -532,6 +628,19 @@ function update() {
     }
     if (bl_y > ai_y) {
         ai.change_pos(0, 1 * ai_speed_multi, 0);
+    }
+
+    if (bl_x < pl_x) {
+        player.change_pos(-1 * p_speed_multi, 0, 0);
+    }
+    if (bl_x > pl_x) {
+        player.change_pos(1 * p_speed_multi, 0, 0);
+    }
+    if (bl_y < pl_y) {
+        player.change_pos(0, -1 * p_speed_multi, 0);
+    }
+    if (bl_y > pl_y) {
+        player.change_pos(0, 1 * p_speed_multi, 0);
     }
 }
 
