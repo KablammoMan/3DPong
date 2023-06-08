@@ -1,28 +1,3 @@
-const vertices = [];
-const sides = [];
-const containers = [];
-const texts = [];
-const keypress = {};
-const ball_size = 50;
-const paddle_size = 100;
-const p_thickness = 20;
-const area_length = 1000;
-const ai_speed_multi = 5;
-const p_speed_multi = 5;
-const x_bounce_multi = 0.1; // Increase Amount per X bounce
-const y_bounce_multi = 0.1; // Increase Amount per Y bounce
-const z_bounce_multi = 0.1; // Increase Amount per Z bounce
-const cvs = new canvas("#999");
-var focal_length = 60;
-var p_score = 0;
-var a_score = 0;
-var end = false;
-var update_int;
-var pong;
-var ai;
-var player;
-var topw, leftw, rightw, bottomw;
-var scoreText;
 
 class vertex {
     constructor(x, y, z) {
@@ -131,6 +106,31 @@ class canvas {
     }
 }
 
+const vertices = [];
+const sides = [];
+const containers = [];
+const texts = [];
+const keypress = {};
+const ball_size = 50;
+const paddle_size = 100;
+const p_thickness = 20;
+const area_length = 1000;
+const ai_speed_multi = 5;
+const p_speed_multi = 5;
+const x_bounce_multi = 0.1; // Increase Amount per X bounce
+const y_bounce_multi = 0.1; // Increase Amount per Y bounce
+const z_bounce_multi = 0.1; // Increase Amount per Z bounce
+const cvs = new canvas("#999");
+var focal_length = 60;
+var p_score = 0;
+var a_score = 0;
+var end = false;
+var update_int;
+var pong;
+var ai;
+var player;
+var topw, leftw, rightw, bottomw;
+var scoreText;
 
 function render() {
     // Render 3D Shapes
