@@ -243,7 +243,7 @@ function collision(ball, cont) {
     let cT = vertices[sides[cont.sids[4]].ids[0]].y;
     let cb = vertices[sides[cont.sids[5]].ids[0]].y;
 
-    if (
+    if (//  X    ||    X    ||    Y    ||    Y    ||    Z    ||    Z
         (bR > cL && bR < cR && bb > cT && bb < cb && bF < cB && bF > cF) || // Front Right Bottom
         (bL > cL && bL < cR && bb > cT && bb < cb && bF < cB && bF > cF) || // Front Left  Bottom
         (bR > cL && bR < cR && bT > cT && bT < cb && bF < cB && bF > cF) || // Front Right Top
